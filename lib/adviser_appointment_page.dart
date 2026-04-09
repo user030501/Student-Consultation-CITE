@@ -188,7 +188,7 @@ class AdviserAppointmentPage extends StatelessWidget {
                 children: c.formData.purposeCategories
                     .map((p) => Chip(
                   label: Text(p, style: const TextStyle(fontSize: 11)),
-                  backgroundColor: const Color(0xFF7C4DFF).withOpacity(0.3),
+                  backgroundColor: const Color(0xFF7C4DFF).withValues(alpha: 0.3),
                   padding: EdgeInsets.zero,
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ))
@@ -235,7 +235,7 @@ class AdviserAppointmentPage extends StatelessWidget {
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: Colors.teal.withOpacity(0.5), width: 1),
+        side: BorderSide(color: Colors.teal.withValues(alpha: 0.5), width: 1),
       ),
       child: Padding(
         padding: const EdgeInsets.all(14),
@@ -272,8 +272,8 @@ class AdviserAppointmentPage extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: Colors.teal.withOpacity(0.08),
-                border: Border.all(color: Colors.teal.withOpacity(0.2)),
+                color: Colors.teal.withValues(alpha: 0.08),
+                border: Border.all(color: Colors.teal.withValues(alpha: 0.2)),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: const Row(

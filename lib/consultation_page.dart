@@ -62,7 +62,7 @@ class StudentConsultationPage extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
               side: isPendingDean
-                  ? BorderSide(color: Colors.teal.withOpacity(0.5), width: 1)
+                  ? BorderSide(color: Colors.teal.withValues(alpha: 0.5), width: 1)
                   : BorderSide.none,
             ),
             child: Padding(
@@ -114,8 +114,8 @@ class StudentConsultationPage extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: Colors.amber.withOpacity(0.08),
-                        border: Border.all(color: Colors.amber.withOpacity(0.3)),
+                        color: Colors.amber.withValues(alpha: 0.08),
+                        border: Border.all(color: Colors.amber.withValues(alpha: 0.3)),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Row(
@@ -139,9 +139,9 @@ class StudentConsultationPage extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: Colors.orange.withOpacity(0.1),
+                        color: Colors.orange.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: Colors.orange.withOpacity(0.4)),
+                        border: Border.all(color: Colors.orange.withValues(alpha: 0.4)),
                       ),
                       child: Row(
                         children: [
@@ -161,8 +161,8 @@ class StudentConsultationPage extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: Colors.teal.withOpacity(0.08),
-                        border: Border.all(color: Colors.teal.withOpacity(0.2)),
+                        color: Colors.teal.withValues(alpha: 0.08),
+                        border: Border.all(color: Colors.teal.withValues(alpha: 0.2)),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: const Row(
@@ -285,7 +285,7 @@ class StudentConsultationPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 10),
                 DropdownButtonFormField<String>(
-                  value: newVenue,
+                  initialValue: newVenue,
                   decoration: InputDecoration(
                     labelText: 'Venue/Method',
                     prefixIcon: const Icon(Icons.location_on),

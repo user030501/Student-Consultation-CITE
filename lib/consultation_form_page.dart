@@ -249,8 +249,8 @@ class _ConsultationFormPageState extends State<ConsultationFormPage> {
               Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.05),
-                  border: Border.all(color: Colors.white.withOpacity(0.1)),
+                  color: Colors.white.withValues(alpha: 0.05),
+                  border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Column(
@@ -259,7 +259,7 @@ class _ConsultationFormPageState extends State<ConsultationFormPage> {
                     Container(
                       padding: const EdgeInsets.fromLTRB(20, 18, 20, 14),
                       decoration: BoxDecoration(
-                        border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.07))),
+                        border: Border(bottom: BorderSide(color: Colors.white.withValues(alpha: 0.07))),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -267,8 +267,8 @@ class _ConsultationFormPageState extends State<ConsultationFormPage> {
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFE040FB).withOpacity(0.15),
-                              border: Border.all(color: const Color(0xFFE040FB).withOpacity(0.3)),
+                              color: const Color(0xFFE040FB).withValues(alpha: 0.15),
+                              border: Border.all(color: const Color(0xFFE040FB).withValues(alpha: 0.3)),
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Text(
@@ -313,8 +313,8 @@ class _ConsultationFormPageState extends State<ConsultationFormPage> {
           Container(
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: const Color(0xFF7C4DFF).withOpacity(0.1),
-              border: Border.all(color: const Color(0xFF7C4DFF).withOpacity(0.3)),
+              color: const Color(0xFF7C4DFF).withValues(alpha: 0.1),
+              border: Border.all(color: const Color(0xFF7C4DFF).withValues(alpha: 0.3)),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Column(
@@ -402,13 +402,13 @@ class _ConsultationFormPageState extends State<ConsultationFormPage> {
           onChanged: (v) => setState(() => formData.venue = v ?? 'In-person'),
         ),
         DropdownButtonFormField<String>(
-          value: formData.advisorName.isEmpty ? null : formData.advisorName,
+          initialValue: formData.advisorName.isEmpty ? null : formData.advisorName,
           decoration: InputDecoration(
             labelText: 'Select Adviser *',
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
             prefixIcon: const Icon(Icons.person_outline),
             filled: true,
-            fillColor: Colors.white.withOpacity(0.04),
+            fillColor: Colors.white.withValues(alpha: 0.04),
           ),
           items: _adviserNames
               .map((n) => DropdownMenuItem(value: n, child: Text(n)))
@@ -434,8 +434,11 @@ class _ConsultationFormPageState extends State<ConsultationFormPage> {
           final checked = formData.purposeCategories.contains(p);
           return GestureDetector(
             onTap: () => setState(() {
-              if (checked) formData.purposeCategories.remove(p);
-              else formData.purposeCategories.add(p);
+              if (checked) {
+                formData.purposeCategories.remove(p);
+              } else {
+                formData.purposeCategories.add(p);
+              }
             }),
             child: Container(
               margin: const EdgeInsets.only(bottom: 10),
@@ -446,7 +449,7 @@ class _ConsultationFormPageState extends State<ConsultationFormPage> {
                   width: checked ? 2 : 1,
                 ),
                 borderRadius: BorderRadius.circular(10),
-                color: checked ? const Color(0xFFE040FB).withOpacity(0.15) : Colors.transparent,
+                color: checked ? const Color(0xFFE040FB).withValues(alpha: 0.15) : Colors.transparent,
               ),
               child: Row(
                 children: [
@@ -494,8 +497,8 @@ class _ConsultationFormPageState extends State<ConsultationFormPage> {
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: Colors.blue.withOpacity(0.08),
-            border: Border.all(color: Colors.blue.withOpacity(0.2)),
+            color: Colors.blue.withValues(alpha: 0.08),
+            border: Border.all(color: Colors.blue.withValues(alpha: 0.2)),
             borderRadius: BorderRadius.circular(10),
           ),
           child: const Row(
@@ -530,7 +533,7 @@ class _ConsultationFormPageState extends State<ConsultationFormPage> {
           prefixIcon: Icon(icon),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
           filled: true,
-          fillColor: Colors.white.withOpacity(0.04),
+          fillColor: Colors.white.withValues(alpha: 0.04),
         ),
       ),
     );
@@ -545,12 +548,12 @@ class _ConsultationFormPageState extends State<ConsultationFormPage> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: DropdownButtonFormField<String>(
-        value: value,
+        initialValue: value,
         decoration: InputDecoration(
           labelText: label,
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
           filled: true,
-          fillColor: Colors.white.withOpacity(0.04),
+          fillColor: Colors.white.withValues(alpha: 0.04),
         ),
         items: items.map((i) => DropdownMenuItem(value: i, child: Text(i))).toList(),
         onChanged: onChanged,
@@ -598,7 +601,7 @@ class _ConsultationFormPageState extends State<ConsultationFormPage> {
       decoration: BoxDecoration(
         border: Border.all(color: Colors.white24),
         borderRadius: BorderRadius.circular(12),
-        color: Colors.white.withOpacity(0.04),
+        color: Colors.white.withValues(alpha: 0.04),
       ),
       child: Row(
         children: [

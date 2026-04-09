@@ -130,16 +130,12 @@ class ApiService {
     switch (status) {
       case 'Pending Dean Approval':
         action = 'approve';
-        break;
       case 'Approved':
         action = deanSignature != null ? 'dean_sign' : 'approve';
-        break;
       case 'Rejected':
         action = 'reject';
-        break;
       case 'Completed':
         action = 'complete';
-        break;
       default:
         action = 'approve';
     }

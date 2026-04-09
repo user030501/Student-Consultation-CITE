@@ -35,10 +35,6 @@ class StudentAppointmentPage extends StatelessWidget {
           final d = c.formData.consultationDate;
           final t = c.formData.consultationTime;
           final isRescheduleRequested = c.status == 'Reschedule Requested';
-          final isPending = c.status == 'Pending';
-          final isRejected = c.status == 'Rejected';
-          final isCompleted = c.status == 'Completed';
-
           return Card(
             child: Padding(
               padding: const EdgeInsets.all(16),
@@ -68,9 +64,9 @@ class StudentAppointmentPage extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: Colors.blue.withOpacity(0.1),
+                        color: Colors.blue.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: Colors.blue.withOpacity(0.3)),
+                        border: Border.all(color: Colors.blue.withValues(alpha: 0.3)),
                       ),
                       child: Row(
                         children: [
@@ -90,9 +86,9 @@ class StudentAppointmentPage extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: Colors.orange.withOpacity(0.1),
+                        color: Colors.orange.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: Colors.orange.withOpacity(0.3)),
+                        border: Border.all(color: Colors.orange.withValues(alpha: 0.3)),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -142,9 +138,12 @@ class StudentAppointmentPage extends StatelessWidget {
   Widget _statusChip(String status) {
     Color color;
     switch (status) {
-      case 'Approved': color = Colors.blue; break;
-      case 'Reschedule Requested': color = Colors.orange; break;
-      default: color = Colors.grey;
+      case 'Approved':
+        color = Colors.blue;
+      case 'Reschedule Requested':
+        color = Colors.orange;
+      default:
+        color = Colors.grey;
     }
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),

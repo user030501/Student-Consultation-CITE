@@ -154,7 +154,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       if (_selectedRole == 'Student') ...[
                         _field(_courseProgramController, 'Course/Program *', Icons.school),
                         DropdownButtonFormField<String>(
-                          value: _selectedYearLevel,
+                          initialValue: _selectedYearLevel,
                           dropdownColor: const Color(0xFF4A148C),
                           decoration: InputDecoration(
                             labelText: 'Year Level *',
@@ -287,8 +287,9 @@ class _RegisterPageState extends State<RegisterPage> {
         validator: (v) {
           if (v == null || v.isEmpty) return 'Password is required';
           if (!isConfirm && v.length < 6) return 'Minimum 6 characters';
-          if (isConfirm && v != _passwordController.text)
+          if (isConfirm && v != _passwordController.text) {
             return 'Passwords do not match';
+          }
           return null;
         },
       ),

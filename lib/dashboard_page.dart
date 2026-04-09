@@ -202,7 +202,7 @@ class _DashCard extends StatelessWidget {
                   style: const TextStyle(color: Colors.white70, fontSize: 12)),
               if (onTap != null) ...[
                 const SizedBox(height: 6),
-                Icon(Icons.arrow_forward_ios, size: 10, color: c.withOpacity(0.6)),
+                Icon(Icons.arrow_forward_ios, size: 10, color: c.withValues(alpha: 0.6)),
               ],
             ],
           ),

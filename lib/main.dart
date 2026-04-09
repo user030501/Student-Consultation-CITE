@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'app_state.dart';
 import 'consultation_page.dart';
-import 'student_appointment_page.dart';
 import 'adviser_appointment_page.dart';
 import 'records_page.dart';
 import 'reports_page.dart';
@@ -179,7 +178,9 @@ class _MyHomePageState extends State<MyHomePage> {
     final navItems = _navItems(role);
 
     // Clamp index if role changes
-    if (_selectedIndex >= navItems.length) _selectedIndex = 0;
+    if (_selectedIndex >= navItems.length) {
+      _selectedIndex = 0;
+    }
 
     final page = _pageForIndex(_selectedIndex, role);
 
@@ -368,8 +369,8 @@ class AdminConsultationsPage extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: Colors.teal.withOpacity(0.08),
-                  border: Border.all(color: Colors.teal.withOpacity(0.2)),
+                  color: Colors.teal.withValues(alpha: 0.08),
+                  border: Border.all(color: Colors.teal.withValues(alpha: 0.2)),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Row(
@@ -449,7 +450,7 @@ class AdminConsultationsPage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(16),
                     side: isPendingDean
                         ? BorderSide(
-                            color: Colors.teal.withOpacity(0.5),
+                            color: Colors.teal.withValues(alpha: 0.5),
                             width: 1,
                           )
                         : BorderSide.none,
