@@ -66,6 +66,85 @@ docker compose up --build
 http://localhost:8080
 ```
 
+### Docker context setup
+
+This computer can use two Docker contexts:
+
+- `default` for the normal Linux Docker engine
+- `desktop-linux` for Docker Desktop
+
+Use only one context at a time. The app, containers, images, and volumes will appear only in the context where you ran the project.
+
+### Option 1: Use `default` context
+
+Use this if you want to run the project from the terminal and show the result using terminal commands.
+
+Select the context:
+
+```bash
+docker context use default
+```
+
+Run the project:
+
+```bash
+flutter pub get
+flutter build web --release
+docker compose up -d --build
+```
+
+Check the Docker resources:
+
+```bash
+docker ps
+docker images
+docker volume ls
+```
+
+Open the app:
+
+```text
+http://localhost:8080
+```
+
+### Option 2: Use `desktop-linux` for Docker Desktop app
+
+Use this if you want the Docker Desktop application to show the containers, images, and volume.
+
+Select the context:
+
+```bash
+docker context use desktop-linux
+```
+
+Run the project:
+
+```bash
+flutter pub get
+flutter build web --release
+docker compose up -d --build
+```
+
+Then open Docker Desktop and check:
+
+- `Containers`
+- `Images`
+- `Volumes`
+
+You should see:
+
+- `student-consultation-web`
+- `student-consultation-redis`
+- `student-consultation-cite-web:latest`
+- `redis:7-alpine`
+- `student-consultation-cite_redis_data`
+
+Open the app:
+
+```text
+http://localhost:8080
+```
+
 ### How to stop the containers
 
 ```bash
