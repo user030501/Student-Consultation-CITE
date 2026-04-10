@@ -46,11 +46,16 @@ async function query(text, params = []) {
 }
 
 app.get('/api/health', async (_req, res) => {
+  res.json({ ok: true, service: 'backend' });
+});
+
+app.get('/api/health/db', async (_req, res) => {
   try {
     await query('SELECT 1');
-    res.json({ ok: true });
+    res.json({ ok: true, database: true });
   } catch (error) {
-    res.status(500).json({ ok: false, error: error.message });
+    console.error('Database health check failed:', error);
+    res.status(500).json({ ok: false, database: false, error: error.message });
   }
 });
 
@@ -296,4 +301,8 @@ app.post('/api/consultations/:id/reschedule', async (req, res) => {
 
 app.listen(port, '0.0.0.0', () => {
   console.log(`API listening on port ${port}`);
+  pool
+    .query('SELECT 1')
+    .then(() => console.log('Database connection OK'))
+    .catch((error) => console.error('Database connection failed:', error));
 });
