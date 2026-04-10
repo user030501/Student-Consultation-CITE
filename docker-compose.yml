@@ -7,7 +7,35 @@ services:
     ports:
       - "8080:80"
     depends_on:
+      - backend
       - redis
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: student-consultation-backend
+    environment:
+      DATABASE_URL: postgresql://student_consultation:student_consultation@postgres:5432/student_consultation
+      PORT: 3000
+      CORS_ORIGIN: http://localhost:8080
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: student-consultation-postgres
+    environment:
+      POSTGRES_DB: student_consultation
+      POSTGRES_USER: student_consultation
+      POSTGRES_PASSWORD: student_consultation
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/init:/docker-entrypoint-initdb.d
 
   redis:
     image: redis:7-alpine
@@ -19,4 +47,5 @@ services:
     command: redis-server --appendonly yes
 
 volumes:
+  postgres_data:
   redis_data:

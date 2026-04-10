@@ -13,7 +13,7 @@ This project includes the following Docker requirements:
 - Docker image
 - Docker volume
 
-The Flutter web app is served by Nginx, and Redis is included as a separate container with a named volume.
+The Flutter web app is served by Nginx. The project now also includes a Node/Express backend, PostgreSQL for app data, and Redis as a separate container with a named volume.
 
 ### Project Docker files
 
@@ -21,6 +21,10 @@ The Flutter web app is served by Nginx, and Redis is included as a separate cont
 - `docker-compose.yml`
 - `nginx.conf`
 - `.dockerignore`
+- `backend/Dockerfile`
+- `backend/src/server.js`
+- `backend/init/01-schema.sql`
+- `backend/init/02-seed.sql`
 
 ### Requirements on another computer
 
@@ -133,10 +137,14 @@ Then open Docker Desktop and check:
 
 You should see:
 
+- `student-consultation-backend`
+- `student-consultation-postgres`
 - `student-consultation-web`
 - `student-consultation-redis`
 - `student-consultation-cite-web:latest`
 - `redis:7-alpine`
+- `postgres:16-alpine`
+- `student-consultation-cite_postgres_data`
 - `student-consultation-cite_redis_data`
 
 Open the app:
@@ -166,6 +174,42 @@ flutter build web --release
 docker compose up --build
 ```
 
+### Development setup for login and database
+
+If you want the login, register, and consultation data to work locally, start PostgreSQL and the backend first:
+
+```bash
+docker compose up -d postgres backend redis
+```
+
+Then run Flutter in the browser:
+
+```bash
+flutter pub get
+flutter run -d chrome --dart-define=API_BASE_URL=http://localhost:3000/api
+```
+
+For a full Docker demo, build the web app and start everything:
+
+```bash
+flutter build web --release
+docker compose up -d --build
+```
+
+Open:
+
+```text
+http://localhost:8080
+```
+
+### Default sample accounts
+
+These accounts are seeded into PostgreSQL on first startup:
+
+- `admin` / `admin123`
+- `stephen` / `cohay123`
+- `ryan` / `ryan123`
+
 ### Docker commands for checking the requirement
 
 Show running containers:
@@ -189,11 +233,15 @@ docker volume ls
 ### Notes
 
 - The web app runs in Nginx on port `8080`
+- The backend API runs on port `3000`
+- PostgreSQL runs on port `5432`
 - Redis runs on port `6379`
+- PostgreSQL stores the app's users and consultations
 - Redis data is stored in the named volume `redis_data`
 - The Docker image uses the local `build/web` output from Flutter
 - Redis is included for the deployment requirement
-- The current Flutter app does not directly use Redis because there is no backend service in this repository
+- The Flutter app now calls the backend API at `http://localhost:3000/api` by default for local development
+- For Android emulators or physical phones, you may need a different `API_BASE_URL`
 
 ## Getting Started
 

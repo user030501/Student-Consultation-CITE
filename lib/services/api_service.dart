@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../models/consultation_form_data.dart';
 
-const String baseUrl = 'http://192.168.68.64/consultation_api';
+const String baseUrl = String.fromEnvironment(
+  'API_BASE_URL',
+  defaultValue: 'http://localhost:3000/api',
+);
 
 class ApiService {
   // ── Auth ────────────────────────────────────────────────────────────────────
@@ -11,7 +14,7 @@ class ApiService {
     try {
       final response = await http
           .post(
-            Uri.parse('$baseUrl/login.php'),
+            Uri.parse('$baseUrl/login'),
             headers: {'Content-Type': 'application/json'},
             body: jsonEncode({
               'username': username.trim().toLowerCase(),
@@ -40,7 +43,7 @@ class ApiService {
   }) async {
     final response = await http
         .post(
-          Uri.parse('$baseUrl/register.php'),
+          Uri.parse('$baseUrl/register'),
           headers: {'Content-Type': 'application/json'},
           body: jsonEncode({
             'username': username.trim().toLowerCase(),
@@ -63,7 +66,7 @@ class ApiService {
   // ── Users ───────────────────────────────────────────────────────────────────
   Future<List<Map<String, dynamic>>> getAdvisers() async {
     final response = await http
-        .get(Uri.parse('$baseUrl/get_advisers.php'))
+        .get(Uri.parse('$baseUrl/advisers'))
         .timeout(const Duration(seconds: 15));
 
     final data = jsonDecode(response.body);
@@ -73,7 +76,7 @@ class ApiService {
   // ── Consultations ───────────────────────────────────────────────────────────
   Future<List<Map<String, dynamic>>> fetchConsultations() async {
     final response = await http
-        .get(Uri.parse('$baseUrl/get_consultations.php'))
+        .get(Uri.parse('$baseUrl/consultations'))
         .timeout(const Duration(seconds: 15));
 
     final data = jsonDecode(response.body);
@@ -86,7 +89,7 @@ class ApiService {
   ) async {
     await http
         .post(
-          Uri.parse('$baseUrl/submit_consultation.php'),
+          Uri.parse('$baseUrl/consultations'),
           headers: {'Content-Type': 'application/json'},
           body: jsonEncode({
             'student_id': studentUserId,
@@ -142,7 +145,7 @@ class ApiService {
 
     await http
         .post(
-          Uri.parse('$baseUrl/update_consultation.php'),
+          Uri.parse('$baseUrl/consultations/$id/status'),
           headers: {'Content-Type': 'application/json'},
           body: jsonEncode({
             'id': id,
@@ -166,11 +169,9 @@ class ApiService {
   }) async {
     await http
         .post(
-          Uri.parse('$baseUrl/update_consultation.php'),
+          Uri.parse('$baseUrl/consultations/$id/reschedule'),
           headers: {'Content-Type': 'application/json'},
           body: jsonEncode({
-            'id': id,
-            'action': 'request_reschedule',
             'reschedule_date': newDate.toIso8601String().split('T')[0],
             'reschedule_time': '${newTime.hour}:${newTime.minute}',
             'reschedule_venue': newVenue,
@@ -183,9 +184,9 @@ class ApiService {
   Future<void> approveReschedule(String id) async {
     await http
         .post(
-          Uri.parse('$baseUrl/update_consultation.php'),
+          Uri.parse('$baseUrl/consultations/$id/status'),
           headers: {'Content-Type': 'application/json'},
-          body: jsonEncode({'id': id, 'action': 'approve_reschedule'}),
+          body: jsonEncode({'action': 'approve_reschedule'}),
         )
         .timeout(const Duration(seconds: 15));
   }

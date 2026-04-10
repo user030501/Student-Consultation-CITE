@@ -10,3 +10,4 @@ ios
 android/.gradle
 android/local.properties
 coverage
+backend/node_modules
