@@ -1,8 +1,14 @@
 import cors from 'cors';
 import express from 'express';
+import fs from 'fs';
+import path from 'path';
 import pg from 'pg';
+import { fileURLToPath } from 'url';
 
 const { Pool } = pg;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const publicDir = path.resolve(__dirname, '../public');
 
 const app = express();
 const port = Number(process.env.PORT || 3000);
@@ -298,6 +304,17 @@ app.post('/api/consultations/:id/reschedule', async (req, res) => {
     return res.status(500).json({ success: false, error: error.message });
   }
 });
+
+if (fs.existsSync(publicDir)) {
+  app.use(express.static(publicDir));
+
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api/')) {
+      return next();
+    }
+    return res.sendFile(path.join(publicDir, 'index.html'));
+  });
+}
 
 app.listen(port, '0.0.0.0', () => {
   console.log(`API listening on port ${port}`);
