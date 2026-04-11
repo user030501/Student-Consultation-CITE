@@ -3,10 +3,17 @@
 .gitignore
 .idea
 .vscode
+.github
 build
 !build/web
 frontend
 ios
+android
+test
+README.md
+.metadata
+analysis_options.yaml
+devtools_options.yaml
 android/.gradle
 android/local.properties
 coverage

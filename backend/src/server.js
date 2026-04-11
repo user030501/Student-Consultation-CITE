@@ -1,6 +1,7 @@
 import cors from 'cors';
 import express from 'express';
 import fs from 'fs';
+import Redis from 'ioredis';
 import path from 'path';
 import pg from 'pg';
 import { fileURLToPath } from 'url';
@@ -16,6 +17,12 @@ const connectionString =
   process.env.DATABASE_URL ||
   'postgresql://student_consultation:student_consultation@postgres:5432/student_consultation';
 const corsOrigin = process.env.CORS_ORIGIN || '*';
+
+const redisUrl = process.env.REDIS_URL || 'redis://redis:6379';
+const redis = new Redis(redisUrl);
+
+redis.on('error', (err) => console.error('Redis Client Error', err));
+redis.on('connect', () => console.log('Redis Client Connected'));
 
 const pool = new Pool({
   connectionString,
@@ -62,6 +69,16 @@ app.get('/api/health/db', async (_req, res) => {
   } catch (error) {
     console.error('Database health check failed:', error);
     res.status(500).json({ ok: false, database: false, error: error.message });
+  }
+});
+
+app.get('/api/health/redis', async (_req, res) => {
+  try {
+    const status = await redis.ping();
+    res.json({ ok: true, redis: status === 'PONG' });
+  } catch (error) {
+    console.error('Redis health check failed:', error);
+    res.status(500).json({ ok: false, redis: false, error: error.message });
   }
 });
 
