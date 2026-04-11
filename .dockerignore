@@ -1,0 +1,13 @@
+.dart_tool
+.git
+.gitignore
+.idea
+.vscode
+build
+!build/web
+frontend
+ios
+android/.gradle
+android/local.properties
+coverage
+backend/node_modules
