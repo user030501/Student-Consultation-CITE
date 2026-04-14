@@ -130,7 +130,9 @@ class ConsultationEntry {
 
 
 class AppState extends ChangeNotifier {
-  final _service = ApiService();
+  AppState({ApiService? service}) : _service = service ?? ApiService();
+
+  final ApiService _service;
 
 
   AppUser? _currentUser;
@@ -487,5 +489,11 @@ class AppState extends ChangeNotifier {
     final bytes = utf8.encode(csv);
     final uri = Uri.dataFromBytes(bytes, mimeType: 'text/csv');
     await launchUrl(uri);
+  }
+
+  @override
+  void dispose() {
+    _service.dispose();
+    super.dispose();
   }
 }
