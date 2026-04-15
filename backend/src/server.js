@@ -18,11 +18,15 @@ const connectionString =
   'postgresql://student_consultation:student_consultation@postgres:5432/student_consultation';
 const corsOrigin = process.env.CORS_ORIGIN || '*';
 
-const redisUrl = process.env.REDIS_URL || 'redis://redis:6379';
-const redis = new Redis(redisUrl);
+const redisUrl = process.env.REDIS_URL;
+const redis = redisUrl ? new Redis(redisUrl) : null;
 
-redis.on('error', (err) => console.error('Redis Client Error', err));
-redis.on('connect', () => console.log('Redis Client Connected'));
+if (redis) {
+  redis.on('error', (err) => console.error('Redis Client Error', err));
+  redis.on('connect', () => console.log('Redis Client Connected'));
+} else {
+  console.log('Redis is disabled. Set REDIS_URL to enable it.');
+}
 
 const pool = new Pool({
   connectionString,
@@ -58,6 +62,116 @@ async function query(text, params = []) {
   return result.rows;
 }
 
+async function initializeDatabase() {
+  await pool.query(`
+    CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
+    DO $$
+    BEGIN
+      IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'user_role') THEN
+        CREATE TYPE user_role AS ENUM ('Student', 'Adviser', 'Admin', 'Dean');
+      END IF;
+
+      IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'consultation_status') THEN
+        CREATE TYPE consultation_status AS ENUM (
+          'Pending',
+          'Pending Dean Approval',
+          'Approved',
+          'Rejected',
+          'Completed',
+          'Reschedule Requested'
+        );
+      END IF;
+    END $$;
+
+    CREATE TABLE IF NOT EXISTS users (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      username VARCHAR(100) NOT NULL UNIQUE,
+      password VARCHAR(255) NOT NULL,
+      role user_role NOT NULL,
+      display_name VARCHAR(100) NOT NULL,
+      course_program VARCHAR(100),
+      year_level VARCHAR(50),
+      email VARCHAR(100),
+      phone VARCHAR(50),
+      created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE TABLE IF NOT EXISTS consultations (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      student_id UUID REFERENCES users(id),
+      full_name VARCHAR(100),
+      student_number VARCHAR(50),
+      course_program VARCHAR(100),
+      year_level VARCHAR(50),
+      phone_number VARCHAR(50),
+      email_address VARCHAR(100),
+      subject_class_title VARCHAR(100),
+      consultation_date DATE,
+      consultation_time VARCHAR(10),
+      venue VARCHAR(100),
+      advisor_name VARCHAR(100),
+      purpose_categories JSONB NOT NULL DEFAULT '[]'::jsonb,
+      detailed_concerns TEXT,
+      issues_discussed TEXT,
+      action_taken TEXT,
+      recommendations TEXT,
+      student_signature TEXT,
+      faculty_signature TEXT,
+      dean_signature TEXT,
+      status consultation_status NOT NULL DEFAULT 'Pending',
+      adviser_note TEXT,
+      approved_at TIMESTAMPTZ,
+      completed_at TIMESTAMPTZ,
+      submitted_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      reschedule_date DATE,
+      reschedule_time VARCHAR(10),
+      reschedule_note TEXT,
+      reschedule_venue VARCHAR(50),
+      adviser_recommendation TEXT
+    );
+  `);
+
+  await pool.query(
+    `INSERT INTO users (
+       id, username, password, role, display_name, course_program, year_level, email, phone
+     ) VALUES
+       ($1, $2, $3, $4, $5, $6, $7, $8, $9),
+       ($10, $11, $12, $13, $14, $15, $16, $17, $18),
+       ($19, $20, $21, $22, $23, $24, $25, $26, $27)
+     ON CONFLICT (username) DO NOTHING`,
+    [
+      '252b0b4f-1bbc-11f1-917b-0a0027000013',
+      'admin',
+      'admin123',
+      'Admin',
+      'Administrator',
+      null,
+      null,
+      null,
+      null,
+      '4529a56d-ca86-4f02-9774-0e58113b9764',
+      'stephen',
+      'cohay123',
+      'Student',
+      'Stephen Cohay',
+      'BSIT',
+      'Year 4',
+      null,
+      null,
+      '8b978901-0d49-43fe-9bf8-46fa8f9f3b0b',
+      'ryan',
+      'ryan123',
+      'Adviser',
+      'Ryan Billera',
+      null,
+      null,
+      null,
+      null,
+    ],
+  );
+}
+
 app.get('/api/health', async (_req, res) => {
   res.json({ ok: true, service: 'backend' });
 });
@@ -73,6 +187,10 @@ app.get('/api/health/db', async (_req, res) => {
 });
 
 app.get('/api/health/redis', async (_req, res) => {
+  if (!redis) {
+    return res.json({ ok: true, redis: false, enabled: false });
+  }
+
   try {
     const status = await redis.ping();
     res.json({ ok: true, redis: status === 'PONG' });
@@ -333,10 +451,18 @@ if (fs.existsSync(publicDir)) {
   });
 }
 
-app.listen(port, '0.0.0.0', () => {
-  console.log(`API listening on port ${port}`);
-  pool
-    .query('SELECT 1')
-    .then(() => console.log('Database connection OK'))
-    .catch((error) => console.error('Database connection failed:', error));
-});
+async function startServer() {
+  try {
+    await initializeDatabase();
+    console.log('Database schema and default users are ready');
+
+    app.listen(port, '0.0.0.0', () => {
+      console.log(`API listening on port ${port}`);
+    });
+  } catch (error) {
+    console.error('Failed to initialize database:', error);
+    process.exit(1);
+  }
+}
+
+startServer();
