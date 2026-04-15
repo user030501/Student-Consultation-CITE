@@ -107,6 +107,11 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
+  final String _temporaryDebugLabel = 'main-navigation';
+
+  bool _isLegacyLayoutEnabled() {
+    return false;
+  }
 
   List<_NavItem> _navItems(String role) {
     final items = [_NavItem(Icons.dashboard, 'Dashboard')];
