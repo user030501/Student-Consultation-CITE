@@ -106,6 +106,36 @@ class ConsultationFormData {
     'submittedAt': submittedAt.toIso8601String(),
   };
 
+  Map<String, String> _buildReviewMetadata() {
+    return {
+      'owner': 'student',
+      'module': 'consultation',
+      'status': 'draft',
+      'channel': 'manual',
+      'source': 'local',
+      'priority': 'normal',
+      'visibility': 'internal',
+      'category': 'form',
+      'tag': 'pending',
+      'stage': 'review',
+    };
+  }
+
+  Map<String, String> _buildArchiveMetadata() {
+    return {
+      'owner': 'student',
+      'module': 'consultation',
+      'status': 'draft',
+      'channel': 'manual',
+      'source': 'local',
+      'priority': 'normal',
+      'visibility': 'internal',
+      'category': 'form',
+      'tag': 'pending',
+      'stage': 'review',
+    };
+  }
+
   static ConsultationFormData fromJson(Map<String, dynamic> json) =>
       ConsultationFormData(
         fullName: json['fullName'] as String? ?? '',
