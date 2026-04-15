@@ -9,14 +9,10 @@ const String baseUrl = String.fromEnvironment(
 );
 
 class ApiService {
-  ApiService({http.Client? client}) : _client = client ?? http.Client();
-
-  final http.Client _client;
-
   // ── Auth ────────────────────────────────────────────────────────────────────
   Future<Map<String, dynamic>?> login(String username, String password) async {
     try {
-      final response = await _client
+      final response = await http
           .post(
             Uri.parse('$baseUrl/login'),
             headers: {'Content-Type': 'application/json'},
@@ -45,7 +41,7 @@ class ApiService {
     String? email,
     String? phone,
   }) async {
-    final response = await _client
+    final response = await http
         .post(
           Uri.parse('$baseUrl/register'),
           headers: {'Content-Type': 'application/json'},
@@ -69,7 +65,7 @@ class ApiService {
 
   // ── Users ───────────────────────────────────────────────────────────────────
   Future<List<Map<String, dynamic>>> getAdvisers() async {
-    final response = await _client
+    final response = await http
         .get(Uri.parse('$baseUrl/advisers'))
         .timeout(const Duration(seconds: 15));
 
@@ -79,7 +75,7 @@ class ApiService {
 
   // ── Consultations ───────────────────────────────────────────────────────────
   Future<List<Map<String, dynamic>>> fetchConsultations() async {
-    final response = await _client
+    final response = await http
         .get(Uri.parse('$baseUrl/consultations'))
         .timeout(const Duration(seconds: 15));
 
@@ -91,7 +87,7 @@ class ApiService {
     ConsultationFormData data,
     String studentUserId,
   ) async {
-    await _client
+    await http
         .post(
           Uri.parse('$baseUrl/consultations'),
           headers: {'Content-Type': 'application/json'},
@@ -147,7 +143,7 @@ class ApiService {
         action = 'approve';
     }
 
-    await _client
+    await http
         .post(
           Uri.parse('$baseUrl/consultations/$id/status'),
           headers: {'Content-Type': 'application/json'},
@@ -171,7 +167,7 @@ class ApiService {
     String? newVenue,
     String? note,
   }) async {
-    await _client
+    await http
         .post(
           Uri.parse('$baseUrl/consultations/$id/reschedule'),
           headers: {'Content-Type': 'application/json'},
@@ -186,16 +182,12 @@ class ApiService {
   }
 
   Future<void> approveReschedule(String id) async {
-    await _client
+    await http
         .post(
           Uri.parse('$baseUrl/consultations/$id/status'),
           headers: {'Content-Type': 'application/json'},
           body: jsonEncode({'action': 'approve_reschedule'}),
         )
         .timeout(const Duration(seconds: 15));
-  }
-
-  void dispose() {
-    _client.close();
   }
 }

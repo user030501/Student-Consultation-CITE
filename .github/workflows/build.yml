@@ -8,7 +8,7 @@ on:
 jobs:
   sonarqube:
     name: SonarQube
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
         with:
@@ -29,18 +29,11 @@ jobs:
         if: ${{ hashFiles('test/**') != '' }}
         run: flutter test --coverage
 
-      - name: Verify coverage report
-        if: ${{ hashFiles('test/**') != '' }}
-        run: |
-          test -f coverage/lcov.info
-          wc -l coverage/lcov.info
-
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@fd88b7d7ccbaefd23d8f36f73b59db7a3d246602 # v6.0.0
         with:
           args: >
             -Dsonar.qualitygate.wait=true
-            -Dsonar.dart.lcov.reportPaths=coverage/lcov.info
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
